@@ -720,3 +720,446 @@
                 minute: '2-digit'
             }).format(date);
         }
+                // Smart City Projects JavaScript - Scoped
+        (function() {
+            // Project data
+            const scpProjectData = {
+                'public-safety': {
+                    iconClass: 'scp-public-safety',
+                    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>`,
+                    title: 'Project 1: Public Safety & Anomaly Detection',
+                    description: 'AI-powered real-time monitoring system that analyzes urban data streams to detect security threats, emergency situations, and unusual patterns for immediate response coordination',
+                    image: 'https://images.unsplash.com/photo-1724883782580-91360d20cc50?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaXR5JTIwc3VydmVpbGxhbmNlJTIwc2VjdXJpdHl8ZW58MXx8fHwxNzU5NDI1NDU0fDA&ixlib=rb-4.1.0&q=80&w=1080',
+                    goals: [
+                        'Deploy AI-powered threat detection across urban areas',
+                        'Achieve sub-minute response time for critical incidents',
+                        'Integrate 15+ data sources for comprehensive monitoring',
+                        'Reduce false alarms by 85% through smart filtering'
+                    ]
+                },
+                'urban-planning': {
+                    iconClass: 'scp-urban-planning',
+                    icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>`,
+                    title: 'Project 2: Smart Urban Planning Assistant',
+                    description: 'Intelligent planning platform that integrates real-time city data, traffic patterns, demographics, and environmental factors to optimize urban development and resource allocation',
+                    image: 'https://images.unsplash.com/photo-1634452639706-fad607966e14?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1cmJhbiUyMHBsYW5uaW5nJTIwY2l0eXxlbnwxfHx8fDE3NTk0MDY2MjF8MA&ixlib=rb-4.1.0&q=80&w=1080',
+                    goals: [
+                        'Create unified digital twin of entire metropolitan area',
+                        'Enable real-time infrastructure optimization decisions',
+                        'Reduce urban congestion by 30% through smart routing',
+                        'Improve citizen satisfaction scores by 45%'
+                    ]
+                }
+            };
+
+            let scpCurrentTab = 'public-safety';
+
+            // Function to render project content
+            function scpRenderProject(tabName) {
+                const project = scpProjectData[tabName];
+                const goalsHTML = project.goals.map((goal, index) => `
+                    <li class="scp-goal-item">
+                        <span class="scp-goal-bullet"></span>
+                        <span class="scp-goal-text">${goal}</span>
+                    </li>
+                `).join('');
+
+                return `
+                    <div class="scp-project-grid">
+                        <div class="scp-project-content">
+                            <div class="scp-project-icon ${project.iconClass}">
+                                ${project.icon}
+                            </div>
+                            <h2 class="scp-project-title">${project.title}</h2>
+                            <div class="scp-project-badge">Project Concept</div>
+                            <p class="scp-project-description">${project.description}</p>
+                            <div class="scp-goals-section">
+                                <div class="scp-goals-header">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <h3>Goals</h3>
+                                </div>
+                                <ul class="scp-goals-list">
+                                    ${goalsHTML}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="scp-project-image">
+                            <img src="${project.image}" alt="${project.title}">
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Function to switch tabs
+            function scpSwitchTab(tabName) {
+                if (tabName === scpCurrentTab) return;
+
+                const projectCard = document.getElementById('scpProjectCard');
+                const buttons = document.querySelectorAll('.scp-tab-button');
+
+                // Update button states
+                buttons.forEach(btn => {
+                    btn.classList.remove('scp-active', 'scp-public-safety', 'scp-urban-planning');
+                    const btnTab = btn.getAttribute('data-scp-tab');
+                    btn.classList.add('scp-' + btnTab);
+                    if (btnTab === tabName) {
+                        btn.classList.add('scp-active', 'scp-' + tabName);
+                    }
+                });
+
+                // Fade out current content
+                projectCard.classList.add('scp-fade-out');
+
+                // Wait for fade out, then update content
+                setTimeout(() => {
+                    scpCurrentTab = tabName;
+                    projectCard.innerHTML = scpRenderProject(tabName);
+                    projectCard.classList.remove('scp-fade-out');
+                    projectCard.classList.add('scp-content-enter');
+                    
+                    // Remove animation class after it completes
+                    setTimeout(() => {
+                        projectCard.classList.remove('scp-content-enter');
+                    }, 600);
+                }, 300);
+            }
+
+            // Add event listeners to tab buttons
+            document.querySelectorAll('.scp-tab-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabName = button.getAttribute('data-scp-tab');
+                    scpSwitchTab(tabName);
+                });
+            });
+
+            // Initial render
+            document.getElementById('scpProjectCard').innerHTML = scpRenderProject('public-safety');
+        })();
+
+        class TechnicalArchitectureAnimations {
+    constructor() {
+        this.observers = [];
+        this.animationDelays = new Map();
+        this.init();
+    }
+
+    init() {
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                this.setupAnimations();
+            });
+        } else {
+            this.setupAnimations();
+        }
+    }
+
+    setupAnimations() {
+        this.createObservers();
+        this.setupHoverEffects();
+    }
+
+    createObservers() {
+        // Hero section observer
+        this.createHeroObserver();
+        
+        // Pipeline section observer
+        this.createPipelineObserver();
+        
+        // Columns section observer
+        this.createColumnsObserver();
+        
+        // Demo section observer
+        this.createDemoObserver();
+    }
+
+    createHeroObserver() {
+        const heroElement = document.getElementById('tech-arch-hero');
+        if (!heroElement) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('tech-arch-visible');
+                }
+            });
+        }, {
+            threshold: 0.3,
+            rootMargin: '0px 0px -10% 0px'
+        });
+
+        observer.observe(heroElement);
+        this.observers.push(observer);
+    }
+
+    createPipelineObserver() {
+        // Pipeline title observer
+        const titleElement = document.getElementById('tech-arch-pipeline-title');
+        if (titleElement) {
+            const titleObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('tech-arch-visible');
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            titleObserver.observe(titleElement);
+            this.observers.push(titleObserver);
+        }
+
+        // Pipeline steps observer
+        const stepElements = document.querySelectorAll('.tech-arch-pipeline-step');
+        
+        const stepsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const step = entry.target;
+                    const stepNumber = parseInt(step.dataset.step);
+                    const delay = parseFloat(step.dataset.delay) * 1000;
+
+                    setTimeout(() => {
+                        this.animatePipelineStep(step, stepNumber);
+                    }, delay);
+                }
+            });
+        }, {
+            threshold: 0.3,
+            rootMargin: '0px 0px -10% 0px'
+        });
+
+        stepElements.forEach(step => {
+            stepsObserver.observe(step);
+        });
+
+        this.observers.push(stepsObserver);
+    }
+
+    animatePipelineStep(step, stepNumber) {
+        // Animate the step container
+        step.classList.add('tech-arch-visible');
+
+        // Animate connecting line and arrow (if not last step)
+        if (stepNumber < 4) {
+            setTimeout(() => {
+                const line = step.querySelector('.tech-arch-connecting-line');
+                const arrow = step.querySelector('.tech-arch-arrow');
+                
+                if (line) line.classList.add('tech-arch-line-visible');
+                
+                setTimeout(() => {
+                    if (arrow) arrow.classList.add('tech-arch-arrow-visible');
+                }, 300);
+            }, 300);
+        }
+
+        // Animate step elements in sequence
+        setTimeout(() => {
+            const badge = step.querySelector('.tech-arch-step-badge');
+            if (badge) badge.classList.add('tech-arch-badge-visible');
+        }, 200);
+
+        setTimeout(() => {
+            const icon = step.querySelector('.tech-arch-step-icon');
+            if (icon) icon.classList.add('tech-arch-icon-visible');
+        }, 400);
+
+        setTimeout(() => {
+            const content = step.querySelector('.tech-arch-step-content');
+            if (content) content.classList.add('tech-arch-content-visible');
+        }, 600);
+    }
+
+    createColumnsObserver() {
+        const columnElements = document.querySelectorAll('.tech-arch-column');
+        
+        const columnsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const column = entry.target;
+                    const columnIndex = Array.from(columnElements).indexOf(column);
+                    
+                    setTimeout(() => {
+                        column.classList.add('tech-arch-visible');
+                        this.animateFeatureCards(column);
+                    }, columnIndex * 200);
+                }
+            });
+        }, {
+            threshold: 0.3,
+            rootMargin: '0px 0px -10% 0px'
+        });
+
+        columnElements.forEach(column => {
+            columnsObserver.observe(column);
+        });
+
+        this.observers.push(columnsObserver);
+    }
+
+    animateFeatureCards(column) {
+        const featureCards = column.querySelectorAll('.tech-arch-feature-card');
+        
+        featureCards.forEach((card, index) => {
+            const delay = parseFloat(card.dataset.delay) * 1000;
+            
+            setTimeout(() => {
+                card.classList.add('tech-arch-visible');
+            }, delay);
+        });
+    }
+
+    createDemoObserver() {
+        const demoContent = document.getElementById('tech-arch-demo');
+        const demoImage = document.getElementById('tech-arch-demo-image');
+        
+        const demoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target === demoContent) {
+                        entry.target.classList.add('tech-arch-visible');
+                    } else if (entry.target === demoImage) {
+                        setTimeout(() => {
+                            entry.target.classList.add('tech-arch-visible');
+                        }, 300);
+                    }
+                }
+            });
+        }, {
+            threshold: 0.3,
+            rootMargin: '0px 0px -10% 0px'
+        });
+
+        if (demoContent) demoObserver.observe(demoContent);
+        if (demoImage) demoObserver.observe(demoImage);
+        
+        this.observers.push(demoObserver);
+    }
+
+    setupHoverEffects() {
+        // Pipeline step hover effects
+        const pipelineSteps = document.querySelectorAll('.tech-arch-pipeline-step');
+        pipelineSteps.forEach(step => {
+            step.addEventListener('mouseenter', () => {
+                const badge = step.querySelector('.tech-arch-step-badge');
+                const icon = step.querySelector('.tech-arch-step-icon');
+                
+                if (badge && badge.classList.contains('tech-arch-badge-visible')) {
+                    badge.style.transform = 'scale(1.1)';
+                }
+                
+                if (icon && icon.classList.contains('tech-arch-icon-visible')) {
+                    icon.style.color = '#374151';
+                }
+            });
+
+            step.addEventListener('mouseleave', () => {
+                const badge = step.querySelector('.tech-arch-step-badge');
+                const icon = step.querySelector('.tech-arch-step-icon');
+                
+                if (badge) {
+                    badge.style.transform = 'scale(1)';
+                }
+                
+                if (icon) {
+                    icon.style.color = '#6b7280';
+                }
+            });
+        });
+
+        // Feature card hover effects
+        const featureCards = document.querySelectorAll('.tech-arch-feature-card');
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const icon = card.querySelector('.tech-arch-feature-icon');
+                const title = card.querySelector('.tech-arch-feature-title');
+                
+                if (icon) {
+                    icon.style.transform = 'scale(1.1)';
+                }
+                
+                if (title) {
+                    title.style.color = '#111827';
+                }
+                
+                card.style.backgroundColor = '#f9fafb';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                const icon = card.querySelector('.tech-arch-feature-icon');
+                const title = card.querySelector('.tech-arch-feature-title');
+                
+                if (icon) {
+                    icon.style.transform = 'scale(1)';
+                }
+                
+                if (title) {
+                    title.style.color = '#374151';
+                }
+                
+                card.style.backgroundColor = 'white';
+            });
+        });
+    }
+
+    // Method to manually trigger animations (useful for testing)
+    triggerAnimation(elementId) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.classList.add('tech-arch-visible');
+        }
+    }
+
+    // Method to reset animations
+    resetAnimations() {
+        const animatedElements = document.querySelectorAll('.tech-arch-visible, .tech-arch-badge-visible, .tech-arch-icon-visible, .tech-arch-content-visible, .tech-arch-line-visible, .tech-arch-arrow-visible');
+        
+        animatedElements.forEach(element => {
+            element.classList.remove('tech-arch-visible', 'tech-arch-badge-visible', 'tech-arch-icon-visible', 'tech-arch-content-visible', 'tech-arch-line-visible', 'tech-arch-arrow-visible');
+        });
+    }
+
+    // Cleanup method
+    destroy() {
+        this.observers.forEach(observer => {
+            observer.disconnect();
+        });
+        this.observers = [];
+    }
+}
+
+// Auto-initialize when script loads
+const techArchAnimations = new TechnicalArchitectureAnimations();
+
+// Expose to global scope for manual control if needed
+window.TechnicalArchitectureAnimations = TechnicalArchitectureAnimations;
+window.techArchAnimations = techArchAnimations;
+
+// Handle page visibility changes to restart animations if needed
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+        // Page became visible again, ensure animations work
+        setTimeout(() => {
+            techArchAnimations.setupAnimations();
+        }, 100);
+    }
+});
+
+// Handle window resize to ensure proper animation triggers
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        // Recreate observers after resize to handle layout changes
+        techArchAnimations.destroy();
+        techArchAnimations.setupAnimations();
+    }, 250);
+});
